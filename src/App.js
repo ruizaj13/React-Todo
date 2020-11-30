@@ -14,11 +14,9 @@ class App extends React.Component {
     }
   }
 
-  
-
   addTask = name => {
     this.setState({
-      tasks: [...this.state.tasks, { name: name, id: Date.now(), purchased: false}]
+      tasks: [...this.state.tasks, { name: name, id: Date.now(), selected: false}]
     });
   }
 
@@ -38,10 +36,25 @@ class App extends React.Component {
 
   taskClear = event => {
     event.preventDefault();
-    
+    this.setState({
+      tasks: this.state.tasks.filter(item => (!item.selected))
+    });
   }
 
-
+  taskSelected = (itemId) => {
+    this.setState({
+      tasks: this.state.tasks.map(item => {
+        if (itemId === item.id) {
+          return({
+            ...item,
+            selected: !item.selected
+          });
+        } else {
+          return(item)
+        }
+      })
+    })
+  }
 
 
   render() {
@@ -49,9 +62,9 @@ class App extends React.Component {
       <div>
         <div>
           <h1>Todo App</h1>
-          <TodoForm taskClear={this.taskClear} taskSubmit={this.taskSubmit} textInput={this.state.textInput} inputChange={this.inputChange}/>
+          <TodoForm  taskSubmit={this.taskSubmit} textInput={this.state.textInput} inputChange={this.inputChange}/>
         </div>
-        <TodoList tasks={this.state.tasks}/>
+        <TodoList taskClear={this.taskClear} taskSelected={this.taskSelected} tasks={this.state.tasks}/>
       </div>
     );
   }
